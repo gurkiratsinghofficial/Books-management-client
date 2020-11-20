@@ -23,9 +23,7 @@ const MyTextInput = ({ label, ...props }) => {
  */
 export const EditBookForm = ({ match }) => {
   const bookId = match.params;
-  console.log(bookId);
   const book = useSelector((state) => selectBookById(state, bookId.bookId));
-  console.log(book);
   const dispatch = useDispatch();
   const history = useHistory();
   return (
@@ -67,7 +65,9 @@ export const EditBookForm = ({ match }) => {
         });
       }}
     >
-      <Form>
+      <Form className="form">
+        <h2>Edit Book</h2>
+
         <MyTextInput
           label="title"
           name="title"

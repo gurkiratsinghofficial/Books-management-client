@@ -8,7 +8,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import errorStrings from "../../constants/constants";
 
 /**
- * Component for editing a book entry
+ * Component for editing user details
  * @param {object} params
  */
 export const EditUserForm = (props) => {
@@ -37,7 +37,7 @@ export const EditUserForm = (props) => {
       /**submit handler */
       onSubmit={async (values, { setSubmitting }) => {
         try {
-          /**dispatch action to edit the book entry */
+          /**dispatch action to edit user details*/
           const resultAction = await dispatch(editUser(values));
           unwrapResult(resultAction);
           props.history.push({

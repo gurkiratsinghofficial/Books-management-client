@@ -123,3 +123,9 @@ span {
 .display-block {
   display: block;
 }
+.books-table {
+  border: 1px solid black;
+}
+label {
+  display: flex;
+}

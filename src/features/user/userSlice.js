@@ -14,7 +14,6 @@ const jwt = getJwt();
 export const signupUser = createAsyncThunk(
   "user/signupUser",
   async (userInfo) => {
-    console.log(userInfo);
     const response = await Axios.post(
       "http://localhost:8080/api/users",
       userInfo
@@ -25,12 +24,10 @@ export const signupUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userInfo) => {
-    console.log(userInfo);
     const response = await Axios.post(
       "http://localhost:8080/api/users/login",
       userInfo
     );
-    console.log(response.data);
     localStorage.setItem("JWT", response.data.token);
     return response.data;
   }
@@ -41,7 +38,6 @@ export const logOut = createAsyncThunk("user/logoutUser", async () => {
 });
 
 export const editUser = createAsyncThunk("books/editUser", async (userInfo) => {
-  console.log(userInfo);
   const response = await Axios.put(
     "http://localhost:8080/api/users",
     userInfo,
@@ -78,7 +74,6 @@ const userSlice = createSlice({
     },
     [editUser.fulfilled]: (state, action) => {
       state.status = "succeeded";
-      console.log(action.payload);
       state.user[0].userinfo = action.payload;
     },
   },

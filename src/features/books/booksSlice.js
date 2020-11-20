@@ -13,7 +13,6 @@ const jwt = getJwt();
 
 /**Thunk to fetch Books data of logged in user */
 export const fetchBooks = createAsyncThunk("books/fetchBooks", async () => {
-  console.log(jwt);
   const response = await Axios.get("http://localhost:8080/api/books/getBooks", {
     headers: { Authorization: `${jwt}` },
   }); //fetch books data ,send id as jwt token in headers
@@ -23,7 +22,6 @@ export const fetchBooks = createAsyncThunk("books/fetchBooks", async () => {
 export const addNewBook = createAsyncThunk(
   "books/addNewBook",
   async (bookInfo) => {
-    console.log(bookInfo);
     const response = await Axios.post(
       "http://localhost:8080/api/books",
       bookInfo,
@@ -34,7 +32,6 @@ export const addNewBook = createAsyncThunk(
 );
 /**Thunk to make changes in existing book entry */
 export const editBook = createAsyncThunk("books/editBook", async (bookInfo) => {
-  console.log(bookInfo);
   const response = await Axios.put(
     "http://localhost:8080/api/books",
     bookInfo,
@@ -45,7 +42,6 @@ export const editBook = createAsyncThunk("books/editBook", async (bookInfo) => {
 export const deleteBook = createAsyncThunk(
   "books/deleteBook",
   async (bookInfo) => {
-    console.log(bookInfo);
     const response = await Axios.post(
       "http://localhost:8080/api/books/deleteBook",
       { isbn: bookInfo },
@@ -62,7 +58,6 @@ const booksSlice = createSlice({
   /**Reducers for different events */
   reducers: {
     bookAdded: (state, action) => {
-      console.log(state);
       state.books.push(action.payload);
     },
     refreshBooks: (state) => {
@@ -72,7 +67,6 @@ const booksSlice = createSlice({
     bookUpdated: (state, action) => {
       const { id, title, author, description, price, pages } = action.payload;
       const existingBook = state.books.find((book) => book.id === id.bookId);
-      console.log(existingBook);
       if (existingBook) {
         existingBook.title = title;
         existingBook.author = author;
@@ -82,7 +76,6 @@ const booksSlice = createSlice({
       }
     },
     bookDeleted: (state, action) => {
-      console.log("delete called");
       let newState = [];
       const newBooksArray = state.books.filter(
         (book) => book.id !== action.payload
@@ -111,7 +104,6 @@ const booksSlice = createSlice({
     [editBook.fulfilled]: (state, action) => {
       const { id, title, author, description, price, pages } = action.payload;
       const existingBook = state.books.find((book) => book.id === id.bookId);
-      console.log(existingBook);
       if (existingBook) {
         existingBook.title = title;
         existingBook.author = author;
@@ -135,6 +127,5 @@ export const {
 export const selectAllBooks = (state) => state.books.books;
 
 export const selectBookById = (state, bookId) => {
-  console.log(state, bookId);
   return state.books.books.find((book) => book.id === parseInt(bookId));
 };

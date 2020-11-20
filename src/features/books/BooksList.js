@@ -24,7 +24,6 @@ export const BooksList = (props) => {
       dispatch(fetchBooks());
     }
   }, [bookStatus, dispatch]);
-  console.log(bookStatus);
   /**table data is refreshed upon editing */
   useEffect(() => {
     if (props.location.state && props.location.state.refresh) {
@@ -33,7 +32,6 @@ export const BooksList = (props) => {
   }, [props.location.state]);
 
   if (bookStatus === "succeeded") {
-    console.log(books);
   } else if (bookStatus === "failed") {
     console.log("error fetching");
   }
@@ -55,12 +53,14 @@ export const BooksList = (props) => {
   return (
     <div>
       {/**Edit form JSX */}
+      <h2>Add new Book</h2>
       <Link to="/editUser">Edit USer</Link>
       <AddBookForm />
-      <table>
+
+      <h2>My Books</h2>
+      <table className="books-table">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Title</th>
             <th>Author</th>
             <th>Description</th>
@@ -73,7 +73,6 @@ export const BooksList = (props) => {
         <tbody>
           {books.map((book) => (
             <tr key={book.id}>
-              <td>{book.id}</td>
               <td>{book.title}</td>
               <td>{book.author}</td>
               <td>{book.description}</td>
