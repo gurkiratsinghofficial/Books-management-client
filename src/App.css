@@ -1,0 +1,125 @@
+body {
+  margin-top: 2%;
+  background-color: #43a047;
+}
+.login-page {
+  width: 360px;
+  padding: 1% 0 0;
+  margin: auto;
+}
+form {
+  display: grid;
+}
+.form {
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  width: 100%;
+  padding: 1% 5% 5% 5%;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+input {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f1;
+  width: 100%;
+  border: 0;
+  margin: 0 0 2px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+h1 {
+  margin: 0;
+}
+.submit {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4caf50;
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  color: #ffffff;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+.submit:hover,
+.submit:active,
+.submit:focus {
+  background: #43a047;
+}
+.error {
+  display: flex;
+  color: red;
+  font-size: 12px;
+}
+.password-div {
+  display: flex;
+}
+.password-toggle {
+  display: flex;
+  width: 100%;
+  margin-left: -22%;
+}
+.password-error {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 15%;
+}
+.password-toggle input {
+  width: 15px;
+  margin-left: 30%;
+  margin-top: 1%;
+}
+.radio {
+  display: flex;
+  margin-bottom: 4%;
+  margin-top: 4%;
+}
+select {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.dob {
+  display: flex;
+}
+h6 {
+  font-size: 13px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+.show-password {
+  width: 100%;
+}
+.form div {
+  display: flex;
+  width: 109%;
+  font-size: 14px;
+}
+#gender {
+  width: 11%;
+}
+td {
+  font-size: 13px;
+}
+.radio-input {
+  width: 15%;
+}
+span {
+  display: flex;
+  color: red;
+}
+.display-block {
+  display: block;
+}
