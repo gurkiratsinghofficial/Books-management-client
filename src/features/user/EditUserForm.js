@@ -58,7 +58,7 @@ export const EditUserForm = (props) => {
             <thead>
               <tr>
                 <th>
-                  <h2>Sign up</h2>
+                  <h2>Edit User</h2>
                 </th>
               </tr>
             </thead>
