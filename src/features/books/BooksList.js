@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { Table } from "react-bootstrap";
+import DeleteModal from "../../UI/DeleteModal";
 import {
   selectAllBooks,
   fetchBooks,
   refreshBooks,
   deleteBook,
 } from "./booksSlice";
-import { AddBookForm } from "./AddBookForm";
+import { fetchUser } from "../user/userSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 /**
@@ -15,32 +17,49 @@ import { unwrapResult } from "@reduxjs/toolkit";
  * @param {object} props
  */
 export const BooksList = (props) => {
+  const { location, history } = props;
+  const [isbn, setIsbn] = useState("");
+  const [deleteShow, setDeleteShow] = useState(false);
   const books = useSelector(selectAllBooks);
   const dispatch = useDispatch();
   const bookStatus = useSelector((state) => state.books.status);
-  /**API is called and data is fetched when status==='idle */
+  const userStatus = useSelector((state) => state.user.status);
+  /**API is called and data is fetched when status==='idle' */
   useEffect(() => {
-    if (bookStatus === "idle") {
+    if (bookStatus === "idle" && userStatus === "succeeded") {
       dispatch(fetchBooks());
     }
-  }, [bookStatus, dispatch]);
+  }, [userStatus, bookStatus, dispatch]);
+  /**API is called and user is fetched when status==='idle' */
+  useEffect(() => {
+    if (userStatus === "idle") {
+      dispatch(fetchUser());
+    }
+  }, [dispatch, userStatus]);
   /**table data is refreshed upon editing */
   useEffect(() => {
-    if (props.location.state && props.location.state.refresh) {
+    if (location.state && location.state.refresh) {
       dispatch(refreshBooks());
     }
-  }, [props.location.state]);
+  }, [dispatch, location.state]);
 
   if (bookStatus === "succeeded") {
   } else if (bookStatus === "failed") {
     console.log("error fetching");
   }
+  /**method to display delete modal */
+  const openModal = (isbn) => {
+    setDeleteShow(true);
+    setIsbn(isbn);
+  };
+  /**method to dispatch action delete book */
   const deleteThisBook = (isbn) => {
     try {
       /**dispatch action to add new book*/
       const resultAction = dispatch(deleteBook(isbn));
       unwrapResult(resultAction);
-      props.history.push({
+      setDeleteShow(false);
+      history.push({
         pathname: "/dashboard",
         state: {
           refresh: "true",
@@ -52,45 +71,51 @@ export const BooksList = (props) => {
   };
   return (
     <div>
-      {/**Edit form JSX */}
-      <h2>Add new Book</h2>
-      <Link to="/editUser">Edit USer</Link>
-      <AddBookForm />
-
-      <h2>My Books</h2>
-      <table className="books-table">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Description</th>
-            <th>Pages</th>
-            <th>Price</th>
-            <th>ISbn</th>
-            <th colSpan="2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {books.map((book) => (
-            <tr key={book.id}>
-              <td>{book.title}</td>
-              <td>{book.author}</td>
-              <td>{book.description}</td>
-              <td>{book.pages}</td>
-              <td>{book.price}</td>
-              <td>{book.isbn}</td>
-              <td>
-                <Link to={`/editBook/${book.id}`}>Edit</Link>{" "}
-              </td>
-              <td>
-                <button onClick={() => deleteThisBook(book.isbn)}>
-                  Delete
-                </button>
-              </td>
+      <div>
+        <h2>My Books</h2>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Description</th>
+              <th>Pages</th>
+              <th>Price</th>
+              <th>ISbn</th>
+              <th colSpan="2">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          {books.length !== 0 ? (
+            <tbody>
+              {books.map((book) => (
+                <tr key={book.id}>
+                  <td>{book.title}</td>
+                  <td>{book.author}</td>
+                  <td>{book.description}</td>
+                  <td>{book.pages}</td>
+                  <td>{book.price}</td>
+                  <td>{book.isbn}</td>
+                  <td>
+                    <Link to={`/editBook/${book.id}`}>Edit</Link>{" "}
+                  </td>
+                  <td>
+                    {/* <button onClick={() => deleteThisBook(book.isbn)}>
+                      Delete
+                    </button> */}
+                    <button onClick={() => openModal(book.isbn)}>delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          ) : null}
+        </Table>
+      </div>
+      <DeleteModal
+        show={deleteShow}
+        setDeleteShow={setDeleteShow}
+        deleteThisBook={deleteThisBook}
+        isbn={isbn}
+      />
     </div>
   );
 };

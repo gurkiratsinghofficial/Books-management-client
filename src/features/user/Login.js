@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Formik, Form } from "formik";
 import errorStrings from "../../constants/constants";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { loginUser } from "./userSlice";
+import { useHistory } from "react-router-dom";
 
 /**Login form component */
 function Login(props) {
+  const [error, setError] = useState("");
+  const history = useHistory();
   const dispatch = useDispatch();
-  const userLoginStatus = useSelector((state) => state.books.status);
   return (
     /**Formik form */
     <Formik
@@ -32,13 +34,15 @@ function Login(props) {
           /**dispatch action to  login the user */
           const resultAction = await dispatch(loginUser(values));
           unwrapResult(resultAction);
-          /**Redirect to dashboard */
-          props.history.push({
-            pathname: "/dashboard",
-            state: {
-              refresh: "true",
-            },
-          });
+          if (resultAction.payload.success !== "false") {
+            /**Redirect to dashboard */
+            history.push({
+              pathname: "/dashboard",
+              state: {
+                refresh: "true",
+              },
+            });
+          } else setError(resultAction.payload.message);
         } catch (err) {
           console.log("unable to signup", err);
         }
@@ -87,6 +91,21 @@ function Login(props) {
           <button className="submit" type="submit">
             SUBMIT
           </button>
+          {error ? <label>{error}</label> : ""}
+          <label>
+            <small>
+              Don't have an account?{" "}
+              <b
+                onClick={() => {
+                  history.push("/");
+                }}
+              >
+                {" "}
+                sign up
+              </b>{" "}
+              instead
+            </small>
+          </label>
         </Form>
       </div>
     </Formik>

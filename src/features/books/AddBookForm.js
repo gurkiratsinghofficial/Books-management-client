@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { addNewBook } from "./booksSlice";
+import { useHistory } from "react-router-dom";
 
 /**Custom input field */
 const MyTextInput = ({ label, ...props }) => {
@@ -22,6 +23,7 @@ const MyTextInput = ({ label, ...props }) => {
  * Form component for adding new book
  */
 export const AddBookForm = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
   return (
     /**Formik form */
@@ -43,15 +45,17 @@ export const AddBookForm = () => {
         author: Yup.string().required("Required"),
         description: Yup.string().required(),
         pages: Yup.string().required("Required"),
-        price: Yup.string().required("Required"),
+        price: Yup.number().required("Required"),
         isbn: Yup.string().required("Required"),
       })}
       /**Submit handler */
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={async (values, { resetForm }) => {
         try {
           /**dispatch action to add new book*/
           const resultAction = await dispatch(addNewBook(values));
           unwrapResult(resultAction);
+          resetForm();
+          history.push("/dashboard");
         } catch (err) {
           console.log("unable to save", err);
         }
@@ -60,31 +64,31 @@ export const AddBookForm = () => {
       {/**Add book form JSX */}
       <Form>
         <MyTextInput
-          label="title"
+          label="Title"
           name="title"
           type="text"
           placeholder="title"
         />
         <MyTextInput
-          label="author"
+          label="Author"
           name="author"
           type="text"
           placeholder="author"
         />
         <MyTextInput
-          label="description"
+          label="Description"
           name="description"
           type="text"
           placeholder="description"
         />
         <MyTextInput
-          label="pages"
+          label="Pages"
           name="pages"
           type="text"
           placeholder="pages"
         />
         <MyTextInput
-          label="price"
+          label="Price"
           name="price"
           type="text"
           placeholder="price"

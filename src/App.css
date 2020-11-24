@@ -3,7 +3,7 @@ body {
   background-color: #43a047;
 }
 .login-page {
-  width: 360px;
+  width: 390px;
   padding: 1% 0 0;
   margin: auto;
 }
@@ -128,4 +128,11 @@ span {
 }
 label {
   display: flex;
+}
+.editBookDiv {
+  background-color: white;
+}
+b {
+  cursor: pointer;
+  font-size: 1.1rem;
 }

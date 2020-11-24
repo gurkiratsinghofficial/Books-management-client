@@ -9,41 +9,68 @@ const initialState = {
 };
 
 /**get JWT token from local storage */
-const jwt = getJwt();
 
 export const signupUser = createAsyncThunk(
   "user/signupUser",
   async (userInfo) => {
-    const response = await Axios.post(
-      "http://localhost:8080/api/users",
-      userInfo
-    );
-    return response.data;
+    try {
+      const response = await Axios.post(
+        "http://localhost:8080/api/users",
+        userInfo
+      );
+      return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
   }
 );
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userInfo) => {
-    const response = await Axios.post(
-      "http://localhost:8080/api/users/login",
-      userInfo
-    );
-    localStorage.setItem("JWT", response.data.token);
-    return response.data;
+    try {
+      const response = await Axios.post(
+        "http://localhost:8080/api/users/login",
+        userInfo
+      );
+      localStorage.setItem("JWT", response.data.token);
+      return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
   }
 );
+export const fetchUser = createAsyncThunk("books/fetchUser", async () => {
+  try {
+    const jwt = getJwt();
+    const response = await Axios.get(
+      "http://localhost:8080/api/users/fetchUser",
+      {
+        headers: { Authorization: `${jwt}` },
+      }
+    ); //fetch user data
+    return response.data;
+  } catch (err) {
+    return err.response.data;
+  }
+});
+
 export const logOut = createAsyncThunk("user/logoutUser", async () => {
   localStorage.removeItem("JWT");
   return;
 });
 
-export const editUser = createAsyncThunk("books/editUser", async (userInfo) => {
-  const response = await Axios.put(
-    "http://localhost:8080/api/users",
-    userInfo,
-    { headers: { Authorization: `${jwt}` } }
-  );
-  return response.data;
+export const editUser = createAsyncThunk("user/editUser", async (userInfo) => {
+  try {
+    const jwt = getJwt();
+    const response = await Axios.put(
+      "http://localhost:8080/api/users",
+      userInfo,
+      { headers: { Authorization: `${jwt}` } }
+    );
+    return response.data;
+  } catch (err) {
+    return err.response.data;
+  }
 });
 
 const userSlice = createSlice({
@@ -65,16 +92,25 @@ const userSlice = createSlice({
     },
     [loginUser.fulfilled]: (state, action) => {
       state.status = "succeeded";
+      state.user = [];
       state.user = state.user.concat(action.payload);
     },
     [logOut.fulfilled]: (state, action) => {
-      state.status = "succeeded";
       const emptyState = [];
       state.user = emptyState;
+      state.status = "idle";
     },
     [editUser.fulfilled]: (state, action) => {
       state.status = "succeeded";
       state.user[0].userinfo = action.payload;
+    },
+    [fetchUser.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    },
+    [fetchUser.fulfilled]: (state, action) => {
+      state.status = "succeeded";
+      state.user = state.user.concat(action.payload);
     },
   },
 });

@@ -9,45 +9,67 @@ const initialState = {
   error: null,
 };
 /**get JWT token from local storage */
-const jwt = getJwt();
 
 /**Thunk to fetch Books data of logged in user */
 export const fetchBooks = createAsyncThunk("books/fetchBooks", async () => {
-  const response = await Axios.get("http://localhost:8080/api/books/getBooks", {
-    headers: { Authorization: `${jwt}` },
-  }); //fetch books data ,send id as jwt token in headers
-  return response.data;
+  try {
+    const jwt = getJwt();
+    const response = await Axios.get(
+      "http://localhost:8080/api/books/getBooks",
+      {
+        headers: { Authorization: `${jwt}` },
+      }
+    ); //fetch books data ,send id as jwt token in headers
+    return response.data;
+  } catch (err) {
+    return err.response.data;
+  }
 });
 /**Thunk to post Books data of a new book */
 export const addNewBook = createAsyncThunk(
   "books/addNewBook",
   async (bookInfo) => {
-    const response = await Axios.post(
+    try {
+      const jwt = getJwt();
+      const response = await Axios.post(
+        "http://localhost:8080/api/books",
+        bookInfo,
+        { headers: { Authorization: `${jwt}` } }
+      );
+      return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+);
+/**Thunk to make changes in existing book entry */
+export const editBook = createAsyncThunk("books/editBook", async (bookInfo) => {
+  try {
+    const jwt = getJwt();
+    const response = await Axios.put(
       "http://localhost:8080/api/books",
       bookInfo,
       { headers: { Authorization: `${jwt}` } }
     );
     return response.data;
+  } catch (err) {
+    return err.response.data;
   }
-);
-/**Thunk to make changes in existing book entry */
-export const editBook = createAsyncThunk("books/editBook", async (bookInfo) => {
-  const response = await Axios.put(
-    "http://localhost:8080/api/books",
-    bookInfo,
-    { headers: { Authorization: `${jwt}` } }
-  );
-  return response.data;
 });
 export const deleteBook = createAsyncThunk(
   "books/deleteBook",
   async (bookInfo) => {
-    const response = await Axios.post(
-      "http://localhost:8080/api/books/deleteBook",
-      { isbn: bookInfo },
-      { headers: { Authorization: `${jwt}` } }
-    );
-    return response.data;
+    try {
+      const jwt = getJwt();
+      const response = await Axios.post(
+        "http://localhost:8080/api/books/deleteBook",
+        { isbn: bookInfo },
+        { headers: { Authorization: `${jwt}` } }
+      );
+      return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
   }
 );
 

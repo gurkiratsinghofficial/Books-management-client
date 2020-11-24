@@ -6,10 +6,13 @@ import errorStrings from "../../constants/constants";
 import { useSelector, useDispatch } from "react-redux";
 import { signupUser } from "./userSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { useHistory } from "react-router-dom";
 // import {signup} from './userSlice'
 
 /**Signup form component */
 function Signup(props) {
+  const history = useHistory();
+  const [error, setError] = useState("");
   const [toggle, setToggle] = useState(false);
   const dispatch = useDispatch();
   const userStatus = useSelector((state) => state.books.status);
@@ -54,11 +57,15 @@ function Signup(props) {
         gender: Yup.string().required(errorStrings.GENDER),
       })}
       /**submit handler */
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={async (values) => {
         try {
           const resultAction = await dispatch(signupUser(values));
-          unwrapResult(resultAction);
-          props.history.push("/login");
+          if (resultAction.payload.success === "false") {
+            setError(resultAction.payload.message);
+          } else {
+            unwrapResult(resultAction);
+            props.history.push("/login");
+          }
         } catch (err) {
           console.log("unable to signup", err);
         }
@@ -194,9 +201,19 @@ function Signup(props) {
           <button className="submit" type="submit">
             Submit
           </button>
+          {error ? <label>{error}</label> : ""}
           <label>
             <small>
-              Already have an account? <a href="/login">sign in</a> instead
+              Already have an account?
+              <b
+                onClick={() => {
+                  history.push("/login");
+                }}
+              >
+                {" "}
+                sign in
+              </b>{" "}
+              instead
             </small>
           </label>
         </Form>
